@@ -1,9 +1,0 @@
-[project]
-name = "visium-server"
-version = "0.1.0"
-description = "Exposes endpoints to make manim videos from natural language"
-readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "manim>=0.19.0",
-]
