@@ -15,3 +15,16 @@ uv add manim
 ```
 Thats it manim installation done atlast, wohhhhfffff
 - 
+# Testing if it can convert a json file to video (commit 8 and 9)
+- So I am first thinking of the idea to implement just one json file, cause LLM can make JSON very deterministically so if we create a JSON then create code and then create video from that all good
+- Now, to run this at this stage just do after all normal uv stuff and run
+```
+python worker.py
+```
+## How the worker is working 
+- load the the JSON object with already written code
+- render the code and parallelise it simple
+- we are using ProcessPoolExecutor and not asyncio cause, it helps to parallelise and create subprocesses inside the CPU unlike the asyncio which uses one thread only like Javascript
+- then last important peice of the puzzle is subprocesses by which I can run CMD commands using python this is the best 
+
+## Next is create a langraph workflow 
