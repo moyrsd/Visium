@@ -3,3 +3,5 @@
 *__pycache__
 static
 temp_scripts
+.env
+
