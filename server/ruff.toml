@@ -1,0 +1,101 @@
+# ruff.toml — Configuration for Ruff (Python linter & formatter)
+# Reference: https://docs.astral.sh/ruff/configuration/
+
+# -------------------------------------
+# Core settings
+# -------------------------------------
+target-version = "py310"       # or py311 / py312 based on your interpreter
+line-length = 88               # Black-compatible line length
+indent-width = 4
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "I",  # isort import sorting
+    "B",  # flake8-bugbear (common bugs)
+    "UP", # pyupgrade (modernize syntax)
+    "S",  # bandit (security checks)
+    "N",  # pep8-naming
+    "C90",# mccabe complexity
+    "A",  # flake8-builtins
+    "DTZ",# datetime tz issues
+    "PIE",# miscellaneous code improvements
+    "T20",# print statements
+    "PL", # pylint-inspired rules
+]
+
+ignore = [
+    "E501",  # Line too long (Black handles this)
+    "S101",  # Use of assert (okay in tests)
+]
+
+# -------------------------------------
+# Per-file ignore rules
+# -------------------------------------
+[per-file-ignores]
+"tests/*" = ["S", "PLR2004"]   # Disable some security/constant rules in tests
+"__init__.py" = ["F401"]       # Allow unused imports in package inits
+
+# -------------------------------------
+# Import sorting (isort rules)
+# -------------------------------------
+[isort]
+known-first-party = ["your_package_name"]
+combine-as-imports = true
+force-sort-within-sections = true
+lines-between-types = 1
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+
+# -------------------------------------
+# Flake8-bugbear
+# -------------------------------------
+[flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends"]
+
+# -------------------------------------
+# McCabe complexity threshold
+# -------------------------------------
+[mccabe]
+max-complexity = 10
+
+# -------------------------------------
+# Pylint-inspired (PL*) rule configuration
+# -------------------------------------
+[pylint]
+max-args = 6
+max-branches = 12
+max-returns = 6
+max-statements = 50
+
+# -------------------------------------
+# Pyupgrade (UP) config
+# -------------------------------------
+[pyupgrade]
+keep-runtime-typing = false
+
+# -------------------------------------
+# Security (bandit)
+# -------------------------------------
+[bandit]
+assert-used = true
+check-asyncio = true
+
+# -------------------------------------
+# Exclude certain directories
+# -------------------------------------
+exclude = [
+    ".venv",
+    "build",
+    "dist",
+    "__pycache__",
+    "migrations",
+    "notebooks",
+]
+
+# -------------------------------------
+# Formatting (if using Ruff formatter)
+# -------------------------------------
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+docstring-code-format = true
