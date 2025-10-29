@@ -4,5 +4,5 @@ To run the project simply do
 uv sync
 uv pip install -e . 
 # Activate your .venv
-manim -pql square_to_circle.py SquareToCircle
+python visium_workflow.py
 ```
