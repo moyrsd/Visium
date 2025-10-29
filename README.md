@@ -28,3 +28,9 @@ python worker.py
 - then last important peice of the puzzle is subprocesses by which I can run CMD commands using python this is the best 
 
 ## Next is create a langraph workflow 
+- The main problem I was facing was LLM is not able to code properly the things, until direcitions its fine but when it come to coding it does not work
+- so I tried to implement an agentic workflow where one llm genarates codes and other llm reviewer checks code, on theory it should have worked but it gave disastrous results, the llm started making new manim apis which never existed 
+- I am thinking to switch to simple boring slides, with no animation and naration how it works in NotebookLM videos of Google
+- Fun Fact : Even NotebookLM cant prove pythagoras thorem visually, I was solving such an hard problem, the llm is the bottle neck my architecture is fine 
+
+## Make Slides with manim
