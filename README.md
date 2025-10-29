@@ -34,3 +34,7 @@ python worker.py
 - Fun Fact : Even NotebookLM cant prove pythagoras thorem visually, I was solving such an hard problem, the llm is the bottle neck my architecture is fine 
 
 ## Make Slides with manim
+- To make slides the script nodes designs the dialouge and the visuals for static slides and then director improves the visuals to be more deterministic in 3b1b visual style
+- Then the graph dynamically creates many coding agents which write code and reveiwes code until code quality and syntax correctness is matched 
+- Finally all the independent workers populates the codes state in the main graph
+- But the workers dont maintain order so I have send their index while intiating workers and finally sorting them
