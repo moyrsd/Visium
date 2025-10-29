@@ -5,7 +5,7 @@
 # Core settings
 # -------------------------------------
 target-version = "py310"       # or py311 / py312 based on your interpreter
-line-length = 88               # Black-compatible line length
+line-length = 140              # Black-compatible line length
 indent-width = 4
 select = [
     "E",  # pycodestyle errors
