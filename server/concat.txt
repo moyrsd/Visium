@@ -1,7 +1,0 @@
-file 'media/videos/fd03946c-0c6f-445a-8170-787d4ab01b38/videos/slide_1/480p15/slide_1_synced.mp4'
-file 'media/videos/fd03946c-0c6f-445a-8170-787d4ab01b38/videos/slide_2/480p15/slide_2_synced.mp4'
-file 'media/videos/fd03946c-0c6f-445a-8170-787d4ab01b38/videos/slide_3/480p15/slide_3_synced.mp4'
-file 'media/videos/fd03946c-0c6f-445a-8170-787d4ab01b38/videos/slide_4/480p15/slide_4_synced.mp4'
-file 'media/videos/fd03946c-0c6f-445a-8170-787d4ab01b38/videos/slide_5/480p15/slide_5_synced.mp4'
-file 'media/videos/fd03946c-0c6f-445a-8170-787d4ab01b38/videos/slide_6/480p15/slide_6_synced.mp4'
-file 'media/videos/fd03946c-0c6f-445a-8170-787d4ab01b38/videos/slide_7/480p15/slide_7_synced.mp4'

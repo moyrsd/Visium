@@ -38,3 +38,20 @@ python worker.py
 - Then the graph dynamically creates many coding agents which write code and reveiwes code until code quality and syntax correctness is matched 
 - Finally all the independent workers populates the codes state in the main graph
 - But the workers dont maintain order so I have send their index while intiating workers and finally sorting them
+
+
+## Improving the coding Agent
+- Agent code was becoming to big for readability so I refactored the code
+- Many places the the video clips generated was not that proper, So I have given eye to our agent
+- I am sending a frame of the video after it is rendered for visual review 
+- This gives better results than just relying on syntax errors
+
+
+## Audio
+- I think audio governs the flow of the video
+- The duration of audio given by tts engine gives you an idea how long the clips should be so I have generated audio files first using deepgram
+- Shoutout to deepgram(Not sponsored, Hehe), But one of the voice matches same as Grant Sanderson 
+- Also, I have written a script to download bgm of 3b1b 
+- Now, I just have to stich audio video and do post processing 
+
+
