@@ -20,6 +20,7 @@ def code_rewrite_prompt(direction, code, feedback, index):
             - Verify Manim CE 0.18+ API compatibility.
 
             # Rules
+            - Make the video as same length as given in the direction, dont use fade out or fade in 
             - All coordinate points must be 3D vectors of the form [x, y, 0]. Using [x, y] will cause broadcasting errors.
             - Use `Polygon(p1, p2, p3)` format, never nested lists.
             - Use `.set_fill(color, opacity=...)` and `.set_stroke(WHITE, width=1)` for shapes.
@@ -38,6 +39,7 @@ def code_generator_prompt(direction, index):
             {direction}
 
             # Code Requirements
+            - Make the video as same length as given in the direction, dont use fade out or fade in 
             - All coordinate points must be 3D vectors of the form [x, y, 0]. Using [x, y] will cause broadcasting errors.
             - Define a class named `Slide{index}(Scene)` with a `construct(self)` method.
             - Set `self.camera.background_color = BLACK`.
@@ -74,6 +76,8 @@ def visual_review_prompt(direction, code):
             {code}
 
             Your job:
+            - Make sure no two things overlaps
+            - Make sure every shape is inside the image fully, no shape is touching the border of the image
             - Evaluate if the image visually matches the specification **to the human eye**.
             - Ignore tiny geometric or typographic deviations (within ~10% size or 0.2 units shift).
             - Focus only on meaningful differences: missing elements, wrong colors, or major misplacement.

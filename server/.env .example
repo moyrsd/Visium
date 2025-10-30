@@ -1,1 +1,2 @@
-GEMINI_API_KEY='copy paste your GEMINI API key here'
+GEMINI_API_KEY ='copy paste your GEMINI API key here'
+DEEPGRAM_API_KEY = " https://deepgram.com/ get your API key "

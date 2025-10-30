@@ -1,6 +1,6 @@
 from langgraph.graph import StateGraph, START, END
 import os
-import shutil
+import shutil  # noqa: F401
 import subprocess
 import uuid  # noqa: F401
 import re
@@ -14,7 +14,7 @@ from app.prompts.manim_agent import (
 
 
 def code_generator(state: CodingAgentState):
-    # print(f"\n code generator got called with state as {state['feedback']}")
+    print(f"\n code generator got called with state as {state['feedback']}")
     if state["rewrite"] == "required":
         msg = llm.invoke(
             code_rewrite_prompt(
@@ -73,24 +73,13 @@ def run_manim_code(code: str, slide_index: int, session_key: str):
     ]
     for f in old_outputs:
         os.remove(f)
-
+    # fmt: off
     # Render with correct CLI flags
-    cmd = [
-        "manim",
-        code_path,
-        f"Slide{slide_index}",
-        "-ql",
-        "-o",
-        video_name,
-        "--media_dir",
-        videos_dir,
-        "--disable_caching",
-    ]
-
+    cmd = ["manim",code_path,f"Slide{slide_index}","-ql","-o",video_name,"--media_dir",videos_dir,"--disable_caching"] 
     proc = subprocess.run(cmd, capture_output=True, text=True)
-
     if proc.returncode != 0:
         return {"success": False, "error": proc.stderr}
+    # fmt: on
 
     # Find generated video path (Manim stores inside subfolders)
     for root, _, files in os.walk(videos_dir):
@@ -113,17 +102,9 @@ def run_manim_code(code: str, slide_index: int, session_key: str):
 
 def extract_last_frame(video_path: str):
     frame_path = video_path.replace(".mp4", "_last.png")
-    cmd = [
-        "ffmpeg",
-        "-y",
-        "-sseof",
-        "-0.3",
-        "-i",
-        video_path,
-        "-vframes",
-        "1",
-        frame_path,
-    ]
+    # fmt: off
+    cmd = ["ffmpeg","-y","-sseof","-0.3","-i",video_path,"-vframes","1",frame_path]
+    # fmt: on
     subprocess.run(cmd, capture_output=True)
     return frame_path
 

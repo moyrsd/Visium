@@ -13,6 +13,9 @@ class Script(BaseModel):
         None,
         json_schema_extra="What will the slide look like, only tell if something would be written or some diagram has to be formed no other comments",
     )
+    duration: float = Field(
+        None, json_schema_extra="The duration for which this dialogue will be narrated."
+    )
 
 
 class ScriptState(BaseModel):
@@ -28,8 +31,9 @@ class Director(BaseModel):
 
 
 class State(TypedDict):
-    id : str 
+    id: str
     topic: Annotated[str, None]
     script: List[Script]
     directions: List[str]
+    audio_paths: List[str]
     codes: Annotated[list, operator.add]

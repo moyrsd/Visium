@@ -25,6 +25,6 @@ def director_prompt(topic, script):
         - External images cant be used only simple shapes can be made, which is possible using library manim 
 
         # Example
-        ["Slide 1: Title Slide, Background: BLACK, Text: MathTex(r'\\text{{Pythagoras Theorem}}, Color: YELLOW', Position: Centered, Font size: Large", "Slide 2: Right-angled triangle, Background: BLACK, Shape: Polygon, vertices=[[-2, -1], [2, -1], [2, 1]], Color: BLUE_C, Outline: White, thin, Labels: a, b, c, Position: a near side [-2, -1] to [2, -1], b near side [2, -1] to [2, 1], c near side [-2, -1] to [2, 1], Color: YELLOW, Text: MathTex('a'), Position: below side a, Text: MathTex('b'), Position: right of side b, Text: MathTex('c'), Position: near hypotenuse c, Font size: Medium"]
+        ["Slide 1: Title Slide, Background: BLACK, Text: MathTex(r'\\text{{Pythagoras Theorem}}, Color: YELLOW', Position: Centered, Font size: Large Duration=3.26 secs", "Slide 2: Right-angled triangle, Background: BLACK, Shape: Polygon, vertices=[[-2, -1], [2, -1], [2, 1]], Color: BLUE_C, Outline: White, thin, Labels: a, b, c, Position: a near side [-2, -1] to [2, -1], b near side [2, -1] to [2, 1], c near side [-2, -1] to [2, 1], Color: YELLOW, Text: MathTex('a'), Position: below side a, Text: MathTex('b'), Position: right of side b, Text: MathTex('c'), Position: near hypotenuse c, Font size: Medium Duration=19 secs"]
          """
 
