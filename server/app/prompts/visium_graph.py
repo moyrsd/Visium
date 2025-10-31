@@ -6,17 +6,16 @@ def director_prompt(topic, script):
         - Palette: YELLOW, BLUE_C, GREEN_C, RED_C only.
         - Shapes: use simple Manim primitives (Line, Polygon, Circle, Square, Tex, MathTex, Arrow, Brace).
         - Center important math objects; avoid clutter.
-        - Text must be LaTeX (`MathTex`), not plain strings.
-        - Font size small but readable; consistent across slides.
+        - Font size small but readable; consistent across slides. Give specific font size 
         - Use thin white outlines and soft opacity for clarity.
-        - Never use external images or complex textures.
+        - Never use external images or complex structures or animations 
 
         # Rules 
+        - **Make sure nothing overlaps**
         - Each instruction should contain all about a single slide
         - Explain which shape, text, position to be drawn in the slide exactly 
-        - Dont give vague instruction be deterministic
+        - Dont give vague instruction be deterministic 
         - Give proper instructions about the orientation and position of the shapes
-        - The slides should contain as minimum text as possible
         - The slide instructions is for a coding agent to code dont give unnecessary comments
         - Just write specfic object and where it should be 
         - Follow a similar font size throught the instructions 
@@ -25,6 +24,5 @@ def director_prompt(topic, script):
         - External images cant be used only simple shapes can be made, which is possible using library manim 
 
         # Example
-        ["Slide 1: Title Slide, Background: BLACK, Text: MathTex(r'\\text{{Pythagoras Theorem}}, Color: YELLOW', Position: Centered, Font size: Large Duration=3.26 secs", "Slide 2: Right-angled triangle, Background: BLACK, Shape: Polygon, vertices=[[-2, -1], [2, -1], [2, 1]], Color: BLUE_C, Outline: White, thin, Labels: a, b, c, Position: a near side [-2, -1] to [2, -1], b near side [2, -1] to [2, 1], c near side [-2, -1] to [2, 1], Color: YELLOW, Text: MathTex('a'), Position: below side a, Text: MathTex('b'), Position: right of side b, Text: MathTex('c'), Position: near hypotenuse c, Font size: Medium Duration=19 secs"]
+        ["Slide 1: Title Slide, Background: BLACK, Text: 'Pythagoras Theorem', Color: YELLOW', Position: Centered, Font size: 60,  Duration=3.26 secs", "Slide 2: Right-angled triangle, Background: BLACK, Shape: Polygon, vertices=[[-2, -1], [2, -1], [2, 1]], Color: BLUE_C, Outline: White, thin, Labels: a, b, c, Position: a near side [-2, -1] to [2, -1], b near side [2, -1] to [2, 1], c near side [-2, -1] to [2, 1], Color: YELLOW, Text: 'a', Position: below side a, Text: 'b', Position: right of side b, Text: 'c', Position: near hypotenuse c, Font size:40,Duration=19 secs"]
          """
-

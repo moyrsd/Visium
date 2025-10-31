@@ -1,4 +1,5 @@
 import yt_dlp
+import os
 
 
 def download_audio_playlist(playlist_url, number_of_tracks):
@@ -10,6 +11,7 @@ def download_audio_playlist(playlist_url, number_of_tracks):
     total = len(entries)
     print(f"Found {total} videos in playlist: {info.get('title', 'Unknown Playlist')}")
 
+    audio_paths = []
     for idx, entry in enumerate(entries, start=1):
         if idx == number_of_tracks + 1:
             break
@@ -34,9 +36,15 @@ def download_audio_playlist(playlist_url, number_of_tracks):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
 
+        path = os.path.relpath(f"{idx}.mp3")
+        if os.path.exists(path):
+            audio_paths.append(path)
+    return audio_paths
+
 
 if __name__ == "__main__":
     playlist_link = (
         "https://www.youtube.com/playlist?list=PLcdkT0k7NzKNxMHHnorkmJ5MjGXHO5jdj"
     )
-    download_audio_playlist(playlist_link,10)
+    audio_paths = download_audio_playlist(playlist_link, 10)
+    print(audio_paths)

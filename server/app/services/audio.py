@@ -27,6 +27,7 @@ def generate_voiceovers(script, session_key):
                 for chunk in response_generator:
                     audio_file.write(chunk)
             duration = get_audio_duration(path)
+            audio_paths.append(path)
             s.duration = duration
             print(f"Audio saved to {path} (Duration: {duration:.2f} seconds)")
 

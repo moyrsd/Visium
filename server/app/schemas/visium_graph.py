@@ -36,4 +36,5 @@ class State(TypedDict):
     script: List[Script]
     directions: List[str]
     audio_paths: List[str]
+    video_paths: Annotated[list, operator.add]
     codes: Annotated[list, operator.add]

@@ -122,7 +122,12 @@ def manim_checker(state: CodingAgentState):
     if review["rewrite"] == "required":
         return {"rewrite": "required", "feedback": review.get("feedback")}
     else:
-        return {"rewrite": "not required"}
+        return {
+            "rewrite": "not required",
+            "video_paths": [
+                {"index": state["slide_index"], "video_path": result["video_path"]}
+            ],
+        }
 
 
 def route_code_review(state: CodingAgentState):
@@ -147,7 +152,9 @@ def finalize_code(state: CodingAgentState):
     #         except Exception as e:
     #             print(f"⚠️ Failed to delete {path}: {e}")
 
-    return {"codes": [{"index": state["slide_index"], "code": state["code"]}]}
+    return {
+        "codes": [{"index": state["slide_index"], "code": state["code"]}],
+    }
 
 
 # Coding Agent

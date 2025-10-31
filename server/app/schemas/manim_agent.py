@@ -16,4 +16,5 @@ class CodingAgentState(TypedDict):
         None,
         json_schema_extra="If code rewrite is required what changes to make suggest so that the geometry is exactly like described",
     )
+    video_paths: Annotated[list, operator.add]
     codes: Annotated[list, operator.add]

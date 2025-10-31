@@ -6,14 +6,16 @@ from app.services.llm_call import llm
 from app.schemas.visium_graph import State, ScriptState, Director
 from app.prompts.visium_graph import director_prompt
 from app.services.audio import generate_voiceovers
+from app.services.video import final_video
 
 
 def script_writer(state: State):
     script_llm = llm.with_structured_output(ScriptState)
     msg = script_llm.invoke(
-        f"""Write a script on the {state["topic"]}, you are preparing slides to explain the topic properly, the slides will be static in nature but will be made with manim library 
+        f"""Write a script on the {state["topic"]}, you are preparing slides to explain the topic properly, the slides will be static in nature but will be made with manim library. Make a flow of a educational video
+
         # Rules
-        - In the dialouges say only the narrator will say dont give any other comments other than dialouge whatever you say in dialouge will be directly converted to audio without any processing
+        - In the dialouges say only what the narrator would say dont give any other comments other than dialouge. Whatever you say in dialouge will be directly converted to audio without any processing
          """
     )
     script, audio_paths = generate_voiceovers(msg.script, state["id"])
@@ -76,20 +78,17 @@ initial_state = {
     "id": id,
 }
 output = workflow.invoke(initial_state)
-# print(output["script"])
-# ordered = sorted(output["codes"], key=lambda x: x["index"])
-# final_codes = [c["code"] for c in ordered]
-# print(final_codes)
+# fmt: off
+music_paths = ['1.mp3', '2.mp3', '3.mp3', '4.mp3', '5.mp3', '6.mp3', '7.mp3', '8.mp3', '9.mp3', '10.mp3'] #
+# fmt: on
+# ToDo dont hardcode this
+relative_music_paths = ["3b1b_music_library/" + s for s in music_paths]
+video_paths_ordered = sorted(output["video_paths"], key=lambda x: x["index"])
+video_paths = [v["video_path"] for v in video_paths_ordered]
+audio_paths = output["audio_paths"]
 
+print(video_paths)
+print(audio_paths)
+print(music_paths)
 
-# audio_paths = generate_voiceovers(output["script"], id)
-# videos = []
-# for i, audio in enumerate(audio_paths, start=1):
-#     slide_video = f"media/videos/{id}/videos/slide_{i}/480p15/slide_{i}.mp4"
-#     synced = extend_slide_duration(slide_video, audio)
-#     videos.append(synced)
-
-# # Step 3: concatenate all synced videos
-# concatenate_with_fade(videos, output_path=f"media/videos/{id}/final.mp4")
-
-# print("✅ Final narrated video ready.")
+final_video(video_paths, audio_paths, relative_music_paths)
