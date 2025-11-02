@@ -8,6 +8,7 @@ dependencies = [
     "ddgs>=9.6.1",
     "deepgram-sdk>=5.2.0",
     "dotenv>=0.9.9",
+    "fastapi>=0.120.3",
     "gtts>=2.5.4",
     "langchain>=1.0.2",
     "langchain-community>=0.4.1",

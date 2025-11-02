@@ -55,3 +55,13 @@ python worker.py
 - Now, I just have to stich audio video and do post processing 
 
 
+# Video 
+- Finally, putting it altogether, the last versions of perfect hopefully bugless videos will the in a temp file
+- I am just stiching the videos
+- For stiching first I am combining video with audio, so that video-audio mapping is there, then I am puting fadein fadeout filter for smoother video  
+- Adding 3b1b bgms in the overall video,Done 
+- We got a video
+
+# Setting up the server 
+- This is one of the most simple and straight foward part of the video, we just have to make APIs for already existing functions
+- 

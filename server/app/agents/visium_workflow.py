@@ -1,6 +1,6 @@
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Send
-import uuid
+import uuid # noqa: F401
 from app.agents.manim_agent import coding_agent_compiled
 from app.services.llm_call import llm
 from app.schemas.visium_graph import State, ScriptState, Director
@@ -66,29 +66,3 @@ visium_workflow.add_edge("coding_agent", END)
 
 
 workflow = visium_workflow.compile()
-id = str(uuid.uuid4())
-initial_state = {
-    "topic": "pythagoras theorem",
-    "script": [],
-    "directions": [],
-    "code": "",
-    "rewrite": "not required",
-    "feedback": "",
-    "codes": [],
-    "id": id,
-}
-output = workflow.invoke(initial_state)
-# fmt: off
-music_paths = ['1.mp3', '2.mp3', '3.mp3', '4.mp3', '5.mp3', '6.mp3', '7.mp3', '8.mp3', '9.mp3', '10.mp3'] #
-# fmt: on
-# ToDo dont hardcode this
-relative_music_paths = ["3b1b_music_library/" + s for s in music_paths]
-video_paths_ordered = sorted(output["video_paths"], key=lambda x: x["index"])
-video_paths = [v["video_path"] for v in video_paths_ordered]
-audio_paths = output["audio_paths"]
-
-print(video_paths)
-print(audio_paths)
-print(music_paths)
-
-final_video(video_paths, audio_paths, relative_music_paths)
