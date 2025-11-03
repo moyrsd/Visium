@@ -4,5 +4,5 @@ To run the project simply do
 uv sync
 uv pip install -e . 
 # Activate your .venv
-python visium_workflow.py
+uvicorn main:app 
 ```
