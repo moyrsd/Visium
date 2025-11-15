@@ -43,6 +43,7 @@ def list_videos(session: Session = Depends(get_session)):
             "description": v.description,
             "created_at": v.created_at,
             "final_video_path": v.final_video_path,
+            "thumbnail_path": v.thumbnail_path,
             "clip_count": len(v.clips),
         }
         for v in videos
@@ -66,6 +67,7 @@ def get_video(video_id: str, session: Session = Depends(get_session)):
                 "id": c.id,
                 "index": c.index,
                 "clip_path": c.clip_path,
+                "thumbnail_path": c.thumbnail_path,
                 "narration_text": c.narration_text,
                 "code": c.code,
                 "prompt": c.prompt,

@@ -13,20 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
-
-interface ClipData {
-  id: string;
-  thumb: string;
-  duration: string;
-}
-
-interface VideoData {
-  id: string;
-  title: string;
-  description: string;
-  url: string;
-  clips: ClipData[];
-}
+import { ClipData, VideoData } from "@/types/video";
 
 export default function VideoSection({ video }: { video: VideoData }) {
   const [selectedClip, setSelectedClip] = useState<ClipData | null>(null);
@@ -36,7 +23,7 @@ export default function VideoSection({ video }: { video: VideoData }) {
       <div className="w-full max-w-7xl">
         {/* Top Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          <VideoPlayer src={video.url} />
+          <VideoPlayer src={`http://127.0.0.1:8000/${video.url}`} />
 
           <div className="flex flex-col ">
             <h1 className="text-2xl font-semibold text-gray-100">

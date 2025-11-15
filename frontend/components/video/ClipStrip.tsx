@@ -2,16 +2,11 @@
 
 import Image from "next/image";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-
-interface ClipData {
-  id: string;
-  thumb: string;
-  duration: string;
-}
+import { ClipData } from "@/types/video";
 
 export default function ClipStrip({
   clips,
-  onOpen
+  onOpen,
 }: {
   clips: ClipData[];
   onOpen: (clip: ClipData) => void;
@@ -27,14 +22,14 @@ export default function ClipStrip({
           >
             <div className="overflow-hidden rounded-md border border-gray-700 hover:border-gray-500 transition">
               <Image
-                src={clip.thumb}
+                src={`http://127.0.0.1:8000/${clip.thumbnail_path}`}
                 alt="clip"
                 width={180}
                 height={120}
                 className="aspect-video h-24 w-40 object-cover"
               />
             </div>
-
+            
             <figcaption className="text-gray-400 pt-1 text-xs">
               {clip.duration}
             </figcaption>

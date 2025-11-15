@@ -13,11 +13,11 @@ function Header() {
 
   return (
     <div
+      bg-background="true"
       className="
         fixed top-0 left-0 w-full
         z-50
-        bg-background
-        p-2 flex justify-between items-center
+        p-6 flex justify-between items-center
       "
     >
       <div className="flex gap-2">

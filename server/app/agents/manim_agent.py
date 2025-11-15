@@ -45,6 +45,8 @@ def run_manim_code(code: str, slide_index: int, clip_video_id: str):
 
     code_path = os.path.join(codes_dir, f"slide_{slide_index}.py")
     video_name = f"slide_{slide_index}.mp4"
+    video_name = f"slide_{slide_index}.mp4"
+    thumbnail_name = f"slide_{slide_index}_last.png"
 
     # Clean up LLM markdown fences if any
     code = re.sub(r"^```(?:python)?\s*", "", code.strip())
@@ -76,7 +78,8 @@ def run_manim_code(code: str, slide_index: int, clip_video_id: str):
         for file in files:
             if file == video_name:
                 video_path = os.path.join(root, file)
-                return {"success": True, "video_path": video_path}
+                thumbs_path = os.path.join(root,thumbnail_name)
+                return {"success": True, "video_path": video_path, "thumbnail_path": thumbs_path}
 
     return {
         "success": False,
@@ -128,6 +131,7 @@ def manim_checker(state: CodingAgentState):
                     "video_id": state["clip_video_id"],
                     "index": state["slide_index"],
                     "clip_path": mixed_video_path,
+                    "thumbnail_path": result.get("thumbnail_path"),
                     "narration_text": state["narration_text"],
                     "code": state["code"],
                     "prompt": state["direction"],

@@ -1,6 +1,5 @@
 "use client";
-
-import Image from "next/image";
+import VideoPlayer from "./VideoPlayer";
 import {
   Dialog,
   DialogContent,
@@ -9,12 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import Editor from "@monaco-editor/react";
-
-interface ClipData {
-  id: string;
-  thumb: string;
-  duration: string;
-}
+import { ClipData } from "@/types/video";
 
 export default function ClipModal({
   clip,
@@ -40,23 +34,25 @@ export default function ClipModal({
           <DialogTitle>Edit Clip</DialogTitle>
         </DialogHeader>
 
-        <div className="h-[65vh] overflow-hidden flex flex-col gap-6">
+        <div className="h-[65vh] overflow-hidden flex flex-col gap-4 items-center">
           {/* Thumbnail */}
-          <Image
-            src={clip.thumb}
-            width={800}
-            height={300}
-            alt="clip"
-            className="rounded-lg mx-auto h-56"
-          />
+          <div className="h-50 w-85">
+            <VideoPlayer
+              key={clip.id}
+              src={`http://127.0.0.1:8000/${clip.clip_path}`}
+            />
+          </div>
 
           {/* Tabs */}
-          <Tabs defaultValue="prompt" className="w-full">
-            <TabsList className="grid grid-cols-3 bg-muted rounded-lg mb-4">
-              <TabsTrigger value="prompt">Prompt</TabsTrigger>
-              <TabsTrigger value="code">Code</TabsTrigger>
-              <TabsTrigger value="narration">Narration</TabsTrigger>
-            </TabsList>
+          <Tabs defaultValue="prompt" className="w-full ">
+            <div className="flex justify-center" >
+              <TabsList className="grid grid-cols-4 bg-muted rounded-lg mb-4 width-90">
+                <TabsTrigger value="prompt">Prompt</TabsTrigger>
+                <TabsTrigger value="code">Code</TabsTrigger>
+                <TabsTrigger value="narration">Narration</TabsTrigger>
+                <TabsTrigger value="visuals">Visuals</TabsTrigger>
+              </TabsList>
+            </div>
 
             {/* Prompt */}
             <TabsContent value="prompt">
@@ -71,7 +67,7 @@ export default function ClipModal({
                   p-3
                   resize-none
                 "
-                placeholder="Describe how to edit this clip..."
+                placeholder={`${clip.prompt}`}
               />
             </TabsContent>
 
@@ -82,7 +78,7 @@ export default function ClipModal({
                   height="100%"
                   defaultLanguage="python"
                   theme="vs-dark"
-                  defaultValue={`# Write your manim code here\nfrom manim import *\n\nclass MyScene(Scene):\n    def construct(self):\n        circle = Circle()\n        self.play(Create(circle))`}
+                  defaultValue={`${clip.code}`}
                   options={{
                     minimap: { enabled: false },
                     fontSize: 14,
@@ -112,7 +108,24 @@ export default function ClipModal({
                   p-3
                   resize-none
                 "
-                placeholder="What should the narrator say in this clip?"
+                placeholder={`${clip.narration_text}`}
+              />
+            </TabsContent>
+
+            {/* Visuals */}
+            <TabsContent value="visuals">
+              <textarea
+                className="
+                  w-full
+                  h-40
+                  bg-input
+                  text-foreground
+                  border border-border
+                  rounded-lg
+                  p-3
+                  resize-none
+                "
+                placeholder={`${clip.visuals}`}
               />
             </TabsContent>
           </Tabs>

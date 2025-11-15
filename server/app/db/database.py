@@ -25,6 +25,7 @@ class Video(SQLModel, table=True):
     description: str | None = None
     created_at: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
     final_video_path: str | None = None
+    thumbnail_path: str | None = None
     clips: list["Clip"] = Relationship(back_populates="video")
 
 
@@ -33,6 +34,7 @@ class Clip(SQLModel, table=True):
     video_id: str = Field(foreign_key="video.id")
     index: int
     clip_path: str
+    thumbnail_path: str | None = None
     narration_text: str | None = None
     code: str | None = None
     prompt: str | None = None

@@ -38,7 +38,7 @@ function Hero() {
   }
 
   return (
-    <div className="flex flex-col items-center mt-30 xl:mt-35 gap-2">
+    <div className="flex flex-col items-center mt-30 xl:mt-70 gap-2">
       <h2 className="font-bold text-4xl text-blue-100">
         {" "}
         Your concepts, made visible.

@@ -16,26 +16,22 @@ export default function VideoPlayer({ src }: Props) {
   useEffect(() => {
     if (!videoRef.current) return;
 
-    if (!playerRef.current) {
-      playerRef.current = videojs(videoRef.current, {
-        controls: true,
-        autoplay: false,
-        preload: "auto",
-        fluid: true,
-        responsiveness: true,
-        sources: [
-          {
-            src,
-            type: "video/mp4",
-          },
-        ],
-      });
-    } else {
-      // Update source without reinitializing
-      playerRef.current.src({ src, type: "video/mp4" });
-    }
+    const t = setTimeout(() => {
+      if (!playerRef.current) {
+        playerRef.current = videojs(videoRef.current as HTMLVideoElement, {
+          controls: true,
+          autoplay: false,
+          preload: "auto",
+          fluid: true,
+          sources: [{ src, type: "video/mp4" }],
+        });
+      } else {
+        playerRef.current.src({ src, type: "video/mp4" });
+      }
+    }, 80);
 
     return () => {
+      clearTimeout(t);
       if (playerRef.current) {
         playerRef.current.dispose();
         playerRef.current = null;
@@ -45,7 +41,10 @@ export default function VideoPlayer({ src }: Props) {
 
   return (
     <div className="rounded-xl overflow-hidden border border-gray-700">
-      <video ref={videoRef} className="video-js vjs-big-play-centered"></video>
+      <video
+        ref={videoRef}
+        className="video-js vjs-big-play-centered w-full h-full"
+      ></video>
     </div>
   );
 }
