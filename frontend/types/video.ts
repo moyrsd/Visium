@@ -14,6 +14,7 @@ export interface VideoData {
   id: string;
   title: string;
   description: string;
-  url: string;
+  url: string | null;
+  thumbnail_path: string;
   clips: ClipData[];
 }

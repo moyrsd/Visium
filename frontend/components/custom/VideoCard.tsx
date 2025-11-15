@@ -1,17 +1,15 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { Play } from "lucide-react";
 import Image from "next/image";
 
 export default function VideoCard({
   title,
   description,
-  duration,
   thumbnail,
 }: {
   title: string;
   description: string;
-  duration: string;
   thumbnail?: string;
 }) {
   return (
@@ -24,15 +22,14 @@ export default function VideoCard({
           className="w-full h-full object-cover opacity-80 width-[640px] max-width: 100vw 33vw"
           alt={title}
         ></Image>
-
-        <Play className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white h-10 w-10 opacity-70" />
-        <div className="absolute bottom-2 right-2 bg-black/60 px-2 py-1 text-xs rounded text-gray-200">
-          {duration}
-        </div>
+        {/* 
+        <Play className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white h-10 w-10 opacity-70" /> */}
       </div>
 
       <h3 className="font-semibold text-gray-200 text-sm">{title}</h3>
-      <p className="text-gray-500 text-xs">{description}</p>
+      <p className="text-gray-500 text-xs line-clamp-2 overflow-hidden text-ellipsis">
+        {description}
+      </p>
     </div>
   );
 }

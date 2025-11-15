@@ -30,7 +30,7 @@ function Hero() {
 
       const data = await response.json();
 
-      router.push(`/videos/${data.video_id}/generating`);
+      router.push(`/videos/${data.video_id}`);
     } catch (err) {
       console.error(err);
       setLoading(false);
@@ -66,11 +66,15 @@ function Hero() {
                 }
               }}
               className={`
-    p-2 h-8 w-9 rounded-md ml-auto transition
-    ${loading ? "bg-gray-500 cursor-not-allowed opacity-60" : ""}
-    ${!loading && userInput ? "bg-blue-500 cursor-pointer" : ""}
-    ${!loading && !userInput ? "bg-blue-400 cursor-not-allowed opacity-60" : ""}
-  `}
+                p-2 h-8 w-9 rounded-md ml-auto transition
+                ${loading ? "bg-gray-500 cursor-not-allowed opacity-60" : ""}
+                ${!loading && userInput ? "bg-blue-500 cursor-pointer" : ""}
+                ${
+                  !loading && !userInput
+                    ? "bg-blue-400 cursor-not-allowed opacity-60"
+                    : ""
+                }
+              `}
             />
           </div>
         </div>

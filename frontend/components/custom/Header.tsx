@@ -20,7 +20,10 @@ function Header() {
         p-6 flex justify-between items-center
       "
     >
-      <div className="flex gap-2">
+      <div
+        className="flex gap-2 cursor-pointer hover:opacity-80"
+        onClick={() => router.push("/")}
+      >
         <Image src={"/logo3.png"} alt="Logo" width={40} height={40} />
         <h1 className="text-4xl font-bold text-blue-100">Visium</h1>
       </div>
@@ -29,14 +32,14 @@ function Header() {
         {/* Replace Link with router.push */}
         {onVideosPage ? (
           <Button
-            className="bg-blue-50 font-bold text-black"
+            className="bg-blue-50 font-bold text-black cursor-pointer hover:opacity-80"
             onClick={() => router.push("/")}
           >
             Generate Video
           </Button>
         ) : (
           <Button
-            className="bg-blue-50 font-bold text-black"
+            className="bg-blue-50 font-bold text-black cursor-pointer hover:opacity-80"
             onClick={() => router.push("/videos")}
           >
             All Videos

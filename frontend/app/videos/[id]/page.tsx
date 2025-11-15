@@ -1,5 +1,5 @@
 import VideoSection from "@/components/video/VideoSection";
-import { ClipData } from "@/types/video";
+import { formatVideoData } from "@/lib/videoUtils"; // Import the helper
 
 export default async function VideoPage({
   params,
@@ -13,28 +13,11 @@ export default async function VideoPage({
   });
 
   if (!res.ok) {
-    return <div className="p-10 text-red-500">Failed to load video</div>;
+    return <div className="p-10 text-red-500">Failed to load video data</div>;
   }
 
-  const video = await res.json();
+  const rawVideo = await res.json();
+  const formattedVideo = formatVideoData(rawVideo);
 
-  const formatted = {
-    id: video.id,
-    title: video.title,
-    description: video.description,
-    url: video.final_video_path,
-    clips: video.clips.map((c: ClipData) => ({
-      id: c.id,
-      index: c.index,
-      clip_path: c.clip_path,
-      thumbnail_path: c.thumbnail_path,
-      duration: c.duration,
-      narration_text: c.narration_text,
-      code: c.code,
-      prompt: c.prompt,
-      visuals: c.visuals,
-    })),
-  };
-
-  return <VideoSection video={formatted} />;
+  return <VideoSection initialVideo={formattedVideo} />;
 }
