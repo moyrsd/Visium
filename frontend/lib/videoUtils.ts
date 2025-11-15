@@ -1,11 +1,20 @@
 import { ClipData, VideoData } from "@/types/video";
 
-export const formatVideoData = (video: VideoData): VideoData => {
+interface ApiVideo {
+  id: string;
+  title: string;
+  description: string;
+  final_video_path: string | null;
+  thumbnail_path: string;
+  clips: ClipData[];
+}
+
+export const formatVideoData = (video: ApiVideo): VideoData => {
   return {
     id: video.id,
     title: video.title,
     description: video.description,
-    url: video.url,
+    url: video.final_video_path,
     thumbnail_path: video.thumbnail_path,
     clips: video.clips.map((c: ClipData) => ({
       id: c.id,
