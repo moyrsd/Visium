@@ -1,5 +1,34 @@
-# visium
+<div align="center" >
+  <img width="20%" src="https://github.com/moyrsd/visium/blob/e5e2c6523c581858407be311516c8223fbfb7e91/frontend/public/logo3.png" alt="Visium logo">
+</div>
+
+<div align="center" >
+  <p align="center">
+    <a href="https://www.youtube.com/watch?v=lA1DLPX7X3M&list=PL8wn-1UB8mCBkF62Zfw4F0ZGLPi2PAnNP">View Demo</a>
+    ·
+    <a href="https://github.com/moyrsd/visium/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/moyrsd/visium/issues">Request Feature</a>
+  </p>
+</div>
+<div align="center" >
+  <img width="100%" src="https://github.com/user-attachments/assets/b94852cb-4875-45ae-98ed-a9d4fc139f8b">
+</div>
+
 Visium is a text to video genarator, but it does not genarate the video using some video llm, it uses llm to write code and to genarate videos using manim in 3Blue1Brown Style
+
+##  Features
+- **Generate 3b1b style videos**
+- **Convert pdfs into videos**
+- **Edit clips of the video with natural language or code**
+
+# Installation
+- docker image coming up wait if someone is watching me incase
+
+# Stack
+- Fast Api for bacekend, Langraph for AI and agentic workflows, SQL alchemy for DB
+- Next js for frontend, Shadcn for UI library
+
 
 ----
 # Roadmap Blog
