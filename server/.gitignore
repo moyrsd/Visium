@@ -2,5 +2,6 @@
 *media
 *__pycache__
 .env
-*.mp3
 concat.txt
+*.db
+

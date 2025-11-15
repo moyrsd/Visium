@@ -1,12 +1,12 @@
-from langgraph.graph import StateGraph, START, END
+from langgraph.graph import END, START, StateGraph
 from langgraph.types import Send
-import uuid # noqa: F401
+
 from app.agents.manim_agent import coding_agent_compiled
-from app.services.llm_call import llm
-from app.schemas.visium_graph import State, ScriptState, Director
 from app.prompts.visium_graph import director_prompt
-from app.services.audio import generate_voiceovers
-from app.services.video import final_video
+from app.schemas.visium_graph_schema import Director, ScriptState, State
+from app.services.audio_service import generate_voiceovers
+from app.services.llm_service import llm
+from app.services.logging_service import logger
 
 
 def script_writer(state: State):
@@ -18,9 +18,9 @@ def script_writer(state: State):
         - In the dialouges say only what the narrator would say dont give any other comments other than dialouge. Whatever you say in dialouge will be directly converted to audio without any processing
          """
     )
-    script, audio_paths = generate_voiceovers(msg.script, state["id"])
-    print(script)
-    print(audio_paths)
+    script, audio_paths = generate_voiceovers(msg.script, state["video_id"])
+    logger.info(f"Generated script: {script}")
+    logger.info(f"Generated audio paths: {audio_paths}")
     return {"script": script, "audio_paths": audio_paths}
 
 
@@ -31,11 +31,10 @@ def director(state: State):
 
 
 def spawn_slide_workers(state: State):
-    session_key = state["id"]
     sends = []
-    print(f"\n\n{state['directions']}")
+    logger.info(f"\n\n{state['directions']}")
     for idx, direction in enumerate(state["directions"], start=1):
-        print(f"\n Running the coding agent on direction {direction}")
+        logger.info(f"\n Running the coding agent on direction {direction}")
         sends.append(
             Send(
                 "coding_agent",
@@ -45,7 +44,11 @@ def spawn_slide_workers(state: State):
                     "code": "",
                     "feedback": "",
                     "slide_index": idx,
-                    "session_key": session_key,
+                    "clip_id": f"{state['video_id']}_slide_{idx}",
+                    "clip_video_id": state["video_id"],
+                    "narration_text": state["script"][idx - 1].dialouge,
+                    "duration": state["script"][idx - 1].duration,
+                    "visuals": state["script"][idx - 1].slide_visuals,
                 },
             )
         )
@@ -57,7 +60,7 @@ visium_workflow = StateGraph(State)
 # Nodes
 visium_workflow.add_node("script_writer", script_writer)
 visium_workflow.add_node("director", director)
-visium_workflow.add_node("coding_agent", coding_agent_compiled, output_keys="codes")
+visium_workflow.add_node("coding_agent", coding_agent_compiled, output_keys=["clips", "video_paths", "codes"])
 # Edges
 visium_workflow.add_edge(START, "script_writer")
 visium_workflow.add_edge("script_writer", "director")

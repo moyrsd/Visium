@@ -1,33 +1,24 @@
-from langgraph.graph import StateGraph, START, END
 import os
-import shutil  # noqa: F401
-import subprocess
-import uuid  # noqa: F401
 import re
-from app.services.llm_call import llm
-from app.schemas.manim_agent import CodingAgentState
-from app.prompts.manim_agent import (
-    code_rewrite_prompt,
-    code_generator_prompt,
-    visual_review_prompt,
-)
+import subprocess
+
+from langgraph.graph import END, START, StateGraph
+
+from app.prompts.manim_agent import code_generator_prompt, code_rewrite_prompt, visual_review_prompt
+from app.schemas.manim_agent_schema import CodingAgentState
+from app.services.llm_service import llm
+from app.services.logging_service import logger
+from app.services.video_service import mix_audio
 
 
 def code_generator(state: CodingAgentState):
     print(f"\n code generator got called with state as {state['feedback']}")
     if state["rewrite"] == "required":
         msg = llm.invoke(
-            code_rewrite_prompt(
-                state["direction"],
-                state["code"],
-                state["feedback"],
-                state["slide_index"],
-            )
+            code_rewrite_prompt(state["direction"], state["code"], state["feedback"], state["slide_index"])
         )
     else:
-        msg = llm.invoke(
-            code_generator_prompt(state["direction"], state["slide_index"])
-        )
+        msg = llm.invoke(code_generator_prompt(state["direction"], state["slide_index"]))
 
     return {"code": msg.content}
 
@@ -37,17 +28,17 @@ def visual_review(direction: str, frame_path: str, code: str):
     with open(frame_path, "rb") as f:
         image_bytes = f.read()
     result = llm.invoke(review_prompt, images=[image_bytes])
-    # print(f"\n Visual Feedback {result.content}")
+    logger.info(f"Visual review result: {result.content}")
     if "accepted" in result.content.lower():
         return {"rewrite": "not required", "feedback": None}
     return {"rewrite": "required", "feedback": result.content}
 
 
 ## Sandbox this in Production
-def run_manim_code(code: str, slide_index: int, session_key: str):
+def run_manim_code(code: str, slide_index: int, clip_video_id: str):
     base_dir = "media"
-    codes_dir = os.path.join(base_dir, "codes", session_key)
-    videos_dir = os.path.join(base_dir, "videos", session_key)
+    codes_dir = os.path.join(base_dir, "codes", clip_video_id)
+    videos_dir = os.path.join(base_dir, clip_video_id)
 
     os.makedirs(codes_dir, exist_ok=True)
     os.makedirs(videos_dir, exist_ok=True)
@@ -59,27 +50,26 @@ def run_manim_code(code: str, slide_index: int, session_key: str):
     code = re.sub(r"^```(?:python)?\s*", "", code.strip())
     code = re.sub(r"```$", "", code.strip())
 
-    # print(f"\n\n {code}")
-
     # Save or overwrite code
     with open(code_path, "w") as f:
         f.write(code)
-
-    # Remove previous renders
-    old_outputs = [
-        os.path.join(videos_dir, f)
-        for f in os.listdir(videos_dir)
-        if f.startswith(f"slide_{slide_index}")
-    ]
-    for f in old_outputs:
-        os.remove(f)
-    # fmt: off
+        logger.info(f"Saved Manim code to {code_path}")
     # Render with correct CLI flags
-    cmd = ["manim",code_path,f"Slide{slide_index}","-ql","-o",video_name,"--media_dir",videos_dir,"--disable_caching"] 
+
+    cmd = [
+        "manim",
+        code_path,
+        f"Slide{slide_index}",
+        "-ql",
+        "-o",
+        video_name,
+        "--media_dir",
+        videos_dir,
+        "--disable_caching",
+    ]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     if proc.returncode != 0:
         return {"success": False, "error": proc.stderr}
-    # fmt: on
 
     # Find generated video path (Manim stores inside subfolders)
     for root, _, files in os.walk(videos_dir):
@@ -110,51 +100,56 @@ def extract_last_frame(video_path: str):
 
 
 def manim_checker(state: CodingAgentState):
-    result = run_manim_code(state["code"], state["slide_index"], state["session_key"])
+    result = run_manim_code(state["code"], state["slide_index"], state["clip_video_id"])
     if not result["success"]:
         simplified_error = re.search(r"ValueError: (.*)", result["error"])
-        concise_feedback = (
-            simplified_error.group(1) if simplified_error else result["error"]
-        )
+        concise_feedback = simplified_error.group(1) if simplified_error else result["error"]
         return {"rewrite": "required", "feedback": concise_feedback}
     frame = extract_last_frame(result["video_path"])
     review = visual_review(state["direction"], frame, state["code"])
     if review["rewrite"] == "required":
         return {"rewrite": "required", "feedback": review.get("feedback")}
     else:
+        logger.info("Mixing audio with video")
+        base_dir = "media"
+        clip_dir = os.path.join(base_dir, "clips", state["clip_video_id"])
+        aud_dir = os.path.join(base_dir, "audio", state["clip_video_id"])
+        os.makedirs(clip_dir, exist_ok=True)
+        os.makedirs(aud_dir, exist_ok=True)
+        clip_path = os.path.join(clip_dir, f"slide_{state['slide_index']}.mp4")
+        aud_path = os.path.join(aud_dir, f"slide_{state['slide_index']}.mp3")
+        mixed_video_path = mix_audio(result["video_path"], aud_path, clip_path)
         return {
             "rewrite": "not required",
-            "video_paths": [
-                {"index": state["slide_index"], "video_path": result["video_path"]}
+            "video_paths": [{"index": state["slide_index"], "video_path": mixed_video_path}],
+            "clips": [
+                {
+                    "id": state["clip_id"],
+                    "video_id": state["clip_video_id"],
+                    "index": state["slide_index"],
+                    "clip_path": mixed_video_path,
+                    "narration_text": state["narration_text"],
+                    "code": state["code"],
+                    "prompt": state["direction"],
+                    "duration": state.get("duration", 0),
+                    "visuals": state.get("visuals", ""),
+                }
             ],
         }
 
 
 def route_code_review(state: CodingAgentState):
     if state["rewrite"] == "required":
+        logger.info(f"Code review rejected for slide {state['slide_index']}")
         return "Rejected"
     else:
+        logger.info(f"Code review accepted for slide {state['slide_index']}")
         return "Accepted"
 
 
 def finalize_code(state: CodingAgentState):
-    # session_key = state["session_key"]
-    # base_dir = "media"
-    # codes_dir = os.path.join(base_dir, "codes", session_key)
-    # videos_dir = os.path.join(base_dir, "videos", session_key)
-
-    # # Remove temporary directories if they exist
-    # for path in [codes_dir, videos_dir]:
-    #     if os.path.exists(path):
-    #         try:
-    #             shutil.rmtree(path)
-    #             print(f"🧹 Cleaned up temporary folder: {path}")
-    #         except Exception as e:
-    #             print(f"⚠️ Failed to delete {path}: {e}")
-
-    return {
-        "codes": [{"index": state["slide_index"], "code": state["code"]}],
-    }
+    logger.info(f"Finalizing code for slide {state['slide_index']}")
+    return {"codes": [{"index": state["slide_index"], "code": state["code"]}]}
 
 
 # Coding Agent
@@ -166,21 +161,7 @@ coding_agent.add_node("finalize_code", finalize_code)
 coding_agent.add_edge(START, "code_generator")
 coding_agent.add_edge("code_generator", "manim_checker")
 coding_agent.add_conditional_edges(
-    "manim_checker",
-    route_code_review,
-    {"Rejected": "code_generator", "Accepted": "finalize_code"},
+    "manim_checker", route_code_review, {"Rejected": "code_generator", "Accepted": "finalize_code"}
 )
 coding_agent.add_edge("finalize_code", END)
 coding_agent_compiled = coding_agent.compile()
-
-
-# initial_state = {
-#     "direction": "Slide 1: Two circles, Background: BLACK, Shape: Circle, Center: [-2, 0], Radius: 1, Color: BLUE_C, Outline: White, thin, Shape: Circle, Center: [2, 0], Radius: 1, Color: BLUE_C, Outline: White, thin",
-#     "rewrite": "not required",
-#     "code": "",
-#     "feedback": "",
-#     "slide_index": 1,
-#     "session_key": str(uuid.uuid4()),
-# }
-# output = coding_agent_compiled.invoke(initial_state)
-# print(output["code"])

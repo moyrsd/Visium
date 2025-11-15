@@ -1,9 +1,42 @@
 "use client";
 import { ArrowRight, Plus } from "lucide-react";
+import { useRouter } from "next/dist/client/components/navigation";
 import React, { useState } from "react";
 
 function Hero() {
   const [userInput, setUserInput] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function handleGenerate() {
+    if (!userInput.trim() || loading) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await fetch("http://localhost:8000/generate_video", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ topic: userInput }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate video");
+      }
+
+      const data = await response.json();
+
+      router.push(`/videos/${data.video_id}/generating`);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="flex flex-col items-center mt-30 xl:mt-35 gap-2">
       <h2 className="font-bold text-4xl text-blue-100">
@@ -27,10 +60,17 @@ function Hero() {
               <Plus className="h-6 w-6 text-gray-400 bg-transparent cursor-pointer" />
             </div>
             <ArrowRight
+              onClick={() => {
+                if (!loading) {
+                  handleGenerate();
+                }
+              }}
               className={`
-      p-2 h-8 w-9  rounded-md cursor-pointer ml-auto
-      ${userInput ? "bg-blue-500" : "bg-blue-400"}
-    `}
+    p-2 h-8 w-9 rounded-md ml-auto transition
+    ${loading ? "bg-gray-500 cursor-not-allowed opacity-60" : ""}
+    ${!loading && userInput ? "bg-blue-500 cursor-pointer" : ""}
+    ${!loading && !userInput ? "bg-blue-400 cursor-not-allowed opacity-60" : ""}
+  `}
             />
           </div>
         </div>
