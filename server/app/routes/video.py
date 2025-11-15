@@ -3,9 +3,11 @@ import uuid
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlmodel import Session, select
 
-from app.db.database import Job, Video, get_session
+from app.db.database import Job, Video, VideoStatus, get_session
+from app.db.operations import update_video_status
 from app.schemas.main_schema import GenerateTitleDesciption, PromptInput
 from app.services.llm_service import llm
+from app.services.video_service import render_video
 from app.services.workflow_service import run_complete_workflow
 
 router = APIRouter()
@@ -18,7 +20,7 @@ async def generate_video(req: PromptInput, background_tasks: BackgroundTasks, se
     msg = generate_title_description(req.topic)
     title = msg.title
     description = msg.description
-    video = Video(id=video_id, title=title, description=description)
+    video = Video(id=video_id, title=title, description=description,status=VideoStatus.PENDING)
     job = Job(id=job_id, status="started", result=None, video_id=video_id)
     session.add(job)
     session.add(video)
@@ -40,6 +42,7 @@ def list_videos(session: Session = Depends(get_session)):
         {
             "id": v.id,
             "title": v.title,
+            "status": v.status.value,
             "description": v.description,
             "created_at": v.created_at,
             "final_video_path": v.final_video_path,
@@ -59,6 +62,7 @@ def get_video(video_id: str, session: Session = Depends(get_session)):
     return {
         "id": video.id,
         "title": video.title,
+        "status": video.status.value,
         "description": video.description,
         "created_at": video.created_at,
         "final_video_path": video.final_video_path,
@@ -77,6 +81,19 @@ def get_video(video_id: str, session: Session = Depends(get_session)):
             for c in video.clips
         ],
     }
+
+
+@router.post("/videos/{video_id}/render")
+def render_video_again(video_id: str, session: Session = Depends(get_session)):
+    video = session.get(Video, video_id)
+    out_path = video.final_video_path
+    update_video_status(session, video_id, VideoStatus.PENDING)
+    music_paths = [f"3b1b_music_library/{i}.mp3" for i in range(1, 11)]
+    clips = [v.clip_path for v in video.clips]
+    render_video(clips, music_paths, out_path)
+    update_video_status(session, video_id, VideoStatus.READY)
+    return {"message": "Video re-rendered successfully", "final_video_path": out_path}
+
 
 
 def generate_title_description(topic: str) -> GenerateTitleDesciption:

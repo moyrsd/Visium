@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 
-from app.db.database import Job, Video
+from app.db.database import Job, Video, VideoStatus
 
 
 def get_job(session: Session, job_id: str) -> Job:
@@ -28,6 +28,14 @@ def get_video(session: Session, video_id: str):
 
 
 def add_video(session: Session, video: Video):
+    session.add(video)
+    session.commit()
+    session.refresh(video)
+
+
+def update_video_status(session: Session, video_id: str, status: VideoStatus):
+    video=get_video(session, video_id)  
+    video.status = status
     session.add(video)
     session.commit()
     session.refresh(video)

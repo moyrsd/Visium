@@ -3,8 +3,8 @@ import os
 from sqlmodel import Session, select
 
 from app.agents.visium_workflow import workflow
-from app.db.database import Clip, Video
-from app.db.operations import get_job, mark_job
+from app.db.database import Clip, Video, VideoStatus
+from app.db.operations import get_job, mark_job, update_video_status
 from app.services.logging_service import logger
 from app.services.video_service import render_video
 
@@ -14,6 +14,7 @@ def run_complete_workflow(topic: str, job_id: str, video_id: str, session: Sessi
     try:
         mark_job(session, job, "running")
         out_path = run_workflow(topic, video_id, job_id, session)
+        update_video_status(session, video_id, VideoStatus.READY)
         mark_job(session, job, "completed", result=out_path)
 
     except Exception as e:

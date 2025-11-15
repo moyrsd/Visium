@@ -1,4 +1,5 @@
 import datetime
+import enum
 import os
 
 from dotenv import load_dotenv
@@ -17,7 +18,11 @@ def init_db():
 def get_session():
     with Session(engine) as session:
         yield session
-
+        
+class VideoStatus(str, enum.Enum):
+    PENDING = "PENDING"  # Still processing, show skeletons
+    READY = "READY"    # Render is complete, show video
+    ERROR = "ERROR"    # Render failed, show an error
 
 class Video(SQLModel, table=True):
     id: str = Field(primary_key=True)
@@ -27,6 +32,7 @@ class Video(SQLModel, table=True):
     final_video_path: str | None = None
     thumbnail_path: str | None = None
     clips: list["Clip"] = Relationship(back_populates="video")
+    status: VideoStatus = Field(default=VideoStatus.PENDING)
 
 
 class Clip(SQLModel, table=True):
