@@ -17,7 +17,7 @@ function Header() {
       bg-background="true"
       className="
         fixed top-0 left-0 w-full
-        z-50
+        z-50 px-12
         p-6 flex justify-between items-center
       "
     >

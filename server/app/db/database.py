@@ -41,11 +41,13 @@ class Clip(SQLModel, table=True):
     index: int
     clip_path: str
     thumbnail_path: str | None = None
+    direction: str | None = None
     narration_text: str | None = None
     code: str | None = None
     prompt: str | None = None
     duration: float | None = None
     visuals: str | None = None
+    audio_path: str | None = None
     video: Video | None = Relationship(back_populates="clips")
 
 
@@ -56,3 +58,5 @@ class Job(SQLModel, table=True):
     created_at: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
     updated_at: datetime.date = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
     video_id: str | None = Field(foreign_key="video.id")
+
+

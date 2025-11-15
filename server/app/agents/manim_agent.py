@@ -137,6 +137,7 @@ def manim_checker(state: CodingAgentState):
                     "prompt": state["direction"],
                     "duration": state.get("duration", 0),
                     "visuals": state.get("visuals", ""),
+                    "audio_path": aud_path,
                 }
             ],
         }
