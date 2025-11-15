@@ -17,4 +17,5 @@ export interface VideoData {
   url: string | null;
   thumbnail_path: string;
   clips: ClipData[];
+  status: "PENDING" | "READY" | "ERROR";
 }

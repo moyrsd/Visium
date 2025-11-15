@@ -14,9 +14,8 @@ import {
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { ClipData, VideoData } from "@/types/video";
-import { Skeleton } from "@/components/ui/skeleton"; 
-import { formatVideoData } from "@/lib/videoUtils"; 
-
+import { Skeleton } from "@/components/ui/skeleton";
+import { formatVideoData } from "@/lib/videoUtils";
 
 const POLLING_INTERVAL_MS = 3000;
 
@@ -28,9 +27,7 @@ export default function VideoSection({
   const [video, setVideo] = useState<VideoData>(initialVideo);
   const [selectedClip, setSelectedClip] = useState<ClipData | null>(null);
 
- 
   const [isProcessing, setIsProcessing] = useState<boolean>(!initialVideo.url);
-
 
   useEffect(() => {
     if (!isProcessing) return;
@@ -51,11 +48,11 @@ export default function VideoSection({
         const rawVideo = await res.json();
 
         // Check if the backend has populated the final video path
-        if (rawVideo.final_video_path) {
+        if (rawVideo.status === "READY" && rawVideo.final_video_path) {
           console.log("Video is ready!");
-          clearInterval(interval); 
-          setVideo(formatVideoData(rawVideo)); 
-          setIsProcessing(false); 
+          clearInterval(interval);
+          setVideo(formatVideoData(rawVideo));
+          setIsProcessing(false);
         } else {
           console.log("Video still processing...");
         }
@@ -66,7 +63,6 @@ export default function VideoSection({
 
     return () => clearInterval(interval);
   }, [isProcessing, video.id]);
-
 
   const handleRender = async () => {
     setIsProcessing(true);
@@ -85,13 +81,12 @@ export default function VideoSection({
       console.log("Render request sent, starting polling...");
     } catch (error) {
       console.error("Render failed:", error);
-      setIsProcessing(false); 
+      setIsProcessing(false);
     }
   };
 
-
   const handleDownload = async () => {
-    if (isProcessing || !video.url) return; 
+    if (isProcessing || !video.url) return;
 
     try {
       const res = await fetch(`http://127.0.0.1:8000/${video.url}`);
@@ -113,7 +108,7 @@ export default function VideoSection({
   };
 
   return (
-    <div className="w-full flex justify-center px-8 py-10 pt-20">
+    <div className="w-full flex justify-center px-8 py-10 pt-30">
       <div className="w-full max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {isProcessing ? (
@@ -123,84 +118,58 @@ export default function VideoSection({
           )}
 
           <div className="flex flex-col ">
-  
-            {isProcessing ? (
-              <Skeleton className="h-8 w-3/4 mb-3" />
-            ) : (
-              <h1 className="text-2xl font-semibold text-gray-100">
-                {video.title}
-              </h1>
-            )}
+            <h1 className="text-2xl font-semibold text-gray-100">
+              {video.title}
+            </h1>
 
-            {isProcessing ? (
-              <div className="space-y-2 mt-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-5/6" />
-              </div>
-            ) : (
-              <p className="text-gray-400 mt-2">{video.description}</p>
-            )}
+            <p className="text-gray-400 mt-2">{video.description}</p>
 
-            {isProcessing ? (
-              <div className="flex gap-4 mt-6">
-                <Skeleton className="h-10 w-40 rounded-lg" />
-                <Skeleton className="h-10 w-24 rounded-lg" />
-              </div>
-            ) : (
-              <div className="flex gap-4 mt-6">
-                <Button
-                  className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
-                  onClick={handleDownload}
-                  disabled={isProcessing || !video.url}
-                >
-                  Download Full Video
-                </Button>
-                <Button
-                  className="px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200"
-                  onClick={handleRender}
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? "Rendering..." : "Render"}
-                </Button>
-              </div>
-            )}
-            {isProcessing ? (
-              <div className="flex gap-4 mt-6">
-                <Skeleton className="h-10 w-[200px] rounded-md" />
-                <Skeleton className="h-10 w-[200px] rounded-md" />
-              </div>
-            ) : (
-              <div className="flex gap-4 mt-6">
-                <Select>
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Music" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Sort By</SelectLabel>
-                      <SelectItem value="Music 1">Music 1 </SelectItem>
-                      <SelectItem value="Music 2">Music 2</SelectItem>
-                      <SelectItem value="Music 3">Music 3</SelectItem>
-                      <SelectItem value="Music 4">Music 4</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <Select>
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Fade" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Sort By</SelectLabel>
-                      <SelectItem value="No fade">No fade</SelectItem>
-                      <SelectItem value="Fade 1">Fade 1</SelectItem>
-                      <SelectItem value="Fade 2">Fade 2</SelectItem>
-                      <SelectItem value="Fade 3">Fade 3</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+            <div className="flex gap-4 mt-6">
+              <Button
+                className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={handleDownload}
+                disabled={isProcessing || !video.url}
+              >
+                Download Full Video
+              </Button>
+              <Button
+                className="px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200"
+                onClick={handleRender}
+                disabled={isProcessing}
+              >
+                {isProcessing ? "Rendering..." : "Render Again"}
+              </Button>
+            </div>
+            <div className="flex gap-4 mt-6">
+              <Select>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Music" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Sort By</SelectLabel>
+                    <SelectItem value="Music 1">Music 1 </SelectItem>
+                    <SelectItem value="Music 2">Music 2</SelectItem>
+                    <SelectItem value="Music 3">Music 3</SelectItem>
+                    <SelectItem value="Music 4">Music 4</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Select>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Fade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Sort By</SelectLabel>
+                    <SelectItem value="No fade">No fade</SelectItem>
+                    <SelectItem value="Fade 1">Fade 1</SelectItem>
+                    <SelectItem value="Fade 2">Fade 2</SelectItem>
+                    <SelectItem value="Fade 3">Fade 3</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 

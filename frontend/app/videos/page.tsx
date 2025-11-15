@@ -26,9 +26,10 @@ export default async function Videos() {
     id: v.id,
     title: v.title,
     description: v.description,
-    thumbnail: v.thumbnail_path
-      ? `http://127.0.0.1:8000/${v.thumbnail_path}`
-      : "/Progress Bar.gif",
+    thumbnail:
+      v.status === "READY"
+        ? `http://127.0.0.1:8000/${v.thumbnail_path}`
+        : "/Progress Bar.gif",
   }));
 
   return (

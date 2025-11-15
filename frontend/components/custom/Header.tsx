@@ -9,7 +9,8 @@ function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const onVideosPage = pathname.startsWith("/videos");
+  const onVideosPage = pathname.endsWith("/videos");
+  const onHomePage = pathname === "/";
 
   return (
     <div
@@ -20,26 +21,23 @@ function Header() {
         p-6 flex justify-between items-center
       "
     >
-      <div
-        className="flex gap-2 cursor-pointer hover:opacity-80"
-        onClick={() => router.push("/")}
-      >
+      <div className="flex gap-2">
         <Image src={"/logo3.png"} alt="Logo" width={40} height={40} />
         <h1 className="text-4xl font-bold text-blue-100">Visium</h1>
       </div>
 
       <div className="flex gap-5">
-        {/* Replace Link with router.push */}
-        {onVideosPage ? (
+        {!onHomePage && (
           <Button
-            className="bg-blue-50 font-bold text-black cursor-pointer hover:opacity-80"
+            className="bg-blue-50 font-bold text-black"
             onClick={() => router.push("/")}
           >
             Generate Video
           </Button>
-        ) : (
+        )}
+        {!onVideosPage && (
           <Button
-            className="bg-blue-50 font-bold text-black cursor-pointer hover:opacity-80"
+            className="bg-blue-50 font-bold text-black"
             onClick={() => router.push("/videos")}
           >
             All Videos

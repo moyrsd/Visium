@@ -4,6 +4,7 @@ interface ApiVideo {
   id: string;
   title: string;
   description: string;
+  status: "PENDING" | "READY" | "ERROR";
   final_video_path: string | null;
   thumbnail_path: string;
   clips: ClipData[];
@@ -13,6 +14,7 @@ export const formatVideoData = (video: ApiVideo): VideoData => {
   return {
     id: video.id,
     title: video.title,
+    status: video.status,
     description: video.description,
     url: video.final_video_path,
     thumbnail_path: video.thumbnail_path,
