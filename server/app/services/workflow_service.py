@@ -60,6 +60,7 @@ def run_workflow(topic: str, video_id: str, job_id: str, session: Session) -> st
         raise RuntimeError("Video not found in DB")
     video.final_video_path = out_path
     video.thumbnail_path = clips[0]["thumbnail_path"] if clips else None
+    video.status = VideoStatus.READY
     session.add(video)
     session.commit()
     session.refresh(video)

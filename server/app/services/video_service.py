@@ -53,34 +53,3 @@ def write_output(clip, output_path: str) -> None:
     )
 
 
-# video_paths = [
-#     "media/clips/8b208eed-071b-46f2-9f83-f46baef07ca4/slide_1.mp4",
-#     "media/clips/8b208eed-071b-46f2-9f83-f46baef07ca4/slide_2.mp4",
-#     "media/clips/8b208eed-071b-46f2-9f83-f46baef07ca4/slide_3.mp4",
-#     "media/clips/8b208eed-071b-46f2-9f83-f46baef07ca4/slide_4.mp4",
-#     "media/clips/8b208eed-071b-46f2-9f83-f46baef07ca4/slide_5.mp4",
-#     "media/clips/8b208eed-071b-46f2-9f83-f46baef07ca4/slide_6.mp4",
-#     "media/clips/8b208eed-071b-46f2-9f83-f46baef07ca4/slide_7.mp4",
-#     "media/clips/8b208eed-071b-46f2-9f83-f46baef07ca4/slide_8.mp4",
-#     "media/clips/8b208eed-071b-46f2-9f83-f46baef07ca4/slide_9.mp4",
-#     "media/clips/8b208eed-071b-46f2-9f83-f46baef07ca4/slide_10.mp4",
-# ]
-
-# audio_paths = [
-#     "3b1b_music_library/1.mp3",
-#     "3b1b_music_library/2.mp3",
-#     "3b1b_music_library/3.mp3",
-#     "3b1b_music_library/4.mp3",
-#     "3b1b_music_library/5.mp3",
-#     "3b1b_music_library/6.mp3",
-#     "3b1b_music_library/7.mp3",
-#     "3b1b_music_library/8.mp3",
-#     "3b1b_music_library/9.mp3",
-#     "3b1b_music_library/10.mp3",
-# ]
-
-# output_path = "/media/final_video/8b208eed-071b-46f2-9f83-f46baef07ca4.mp4"
-
-
-# if __name__ == "__main__":
-#     render_video(video_paths, audio_paths, output_path)

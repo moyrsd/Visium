@@ -5,12 +5,13 @@ import subprocess
 from deepgram import DeepgramClient
 from dotenv import load_dotenv
 
+from app.schemas.visium_graph_schema import Script
 from app.services.logging_service import logger
 
 load_dotenv()
 
 
-def generate_voiceovers(script, video_id: str):
+def generate_voiceovers(script:list[Script], video_id: str):
     audio_dir = f"media/audio/{video_id}"
     os.makedirs(audio_dir, exist_ok=True)
     audio_paths = []
@@ -18,7 +19,7 @@ def generate_voiceovers(script, video_id: str):
     for i, s in enumerate(script, start=1):
         try:
             path = os.path.join(audio_dir, f"slide_{i}.mp3")
-            path,duration = generate_single_voiceover(s.text, path)
+            path,duration = generate_single_voiceover(s.dialouge, path)
             audio_paths.append(path)
             s.duration = duration
             logger.info(f"Audio saved to {path} (Duration: {duration:.2f} seconds)")
@@ -27,9 +28,6 @@ def generate_voiceovers(script, video_id: str):
             logger.error(f"Failed to generate audio for slide {i}: {e}")
 
     return script, audio_paths
-
-
-
 
 def generate_single_voiceover(text, output_path):
     deepgram = DeepgramClient(api_key=os.getenv("DEEPGRAM_API_KEY"))

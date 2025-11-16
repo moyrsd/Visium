@@ -87,11 +87,17 @@ def get_video(video_id: str, session: Session = Depends(get_session)):
 def render_video_again(video_id: str, session: Session = Depends(get_session)):
     video = session.get(Video, video_id)
     out_path = video.final_video_path
-    update_video_status(session, video_id, VideoStatus.PENDING)
+    video.status = VideoStatus.PENDING
+    session.add(video)
+    session.commit()
+    session.refresh(video)
     music_paths = [f"3b1b_music_library/{i}.mp3" for i in range(1, 11)]
     clips = [v.clip_path for v in video.clips]
     render_video(clips, music_paths, out_path)
-    update_video_status(session, video_id, VideoStatus.READY)
+    video.status = VideoStatus.READY
+    session.add(video)
+    session.commit()
+    session.refresh(video)
     return {"message": "Video re-rendered successfully", "final_video_path": out_path}
 
 
