@@ -1,12 +1,12 @@
 import uuid
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
 from sqlmodel import Session, select
 
 from app.db.database import Job, Video, VideoStatus, get_session
-from app.db.operations import update_video_status
-from app.schemas.main_schema import GenerateTitleDesciption, PromptInput
+from app.schemas.main_schema import GenerateTitleDesciption
 from app.services.llm_service import llm
+from app.services.pdf_sevice import extract_text_from_pdf
 from app.services.video_service import render_video
 from app.services.workflow_service import run_complete_workflow
 
@@ -14,10 +14,18 @@ router = APIRouter()
 
 
 @router.post("/generate_video")
-async def generate_video(req: PromptInput, background_tasks: BackgroundTasks, session: Session = Depends(get_session)):
+async def generate_video(
+    topic: str = Form(""),
+    pdf_file: UploadFile | None = File(None),
+    background_tasks: BackgroundTasks = None,
+    session: Session = Depends(get_session)
+):
+    pdf_content = ""
+    if pdf_file:
+        pdf_content += extract_text_from_pdf(pdf_file)
     job_id = str(uuid.uuid4())
     video_id = str(uuid.uuid4())
-    msg = generate_title_description(req.topic)
+    msg = generate_title_description(topic + pdf_content)
     title = msg.title
     description = msg.description
     video = Video(id=video_id, title=title, description=description,status=VideoStatus.PENDING)
@@ -25,7 +33,7 @@ async def generate_video(req: PromptInput, background_tasks: BackgroundTasks, se
     session.add(job)
     session.add(video)
     session.commit()
-    background_tasks.add_task(run_complete_workflow, req.topic, job_id, video_id, session)
+    background_tasks.add_task(run_complete_workflow, topic + pdf_content, job_id, video_id, session)
     return {
         "job_id": job_id,
         "video_id": video_id,

@@ -8,7 +8,7 @@ from sqlmodel import Field, Relationship, Session, SQLModel, create_engine
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./visium.db")
 
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL, echo=False)
 
 
 def init_db():

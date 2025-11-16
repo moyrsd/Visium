@@ -38,8 +38,10 @@ def run_workflow(topic: str, video_id: str, job_id: str, session: Session) -> st
         "job_id": job_id,
         "clips": [],
     }
-
-    output = workflow.invoke(initial_state)
+    config = {
+        "recursion_limit": 50
+    }
+    output = workflow.invoke(initial_state, config=config)
     ordered = sorted(output["video_paths"], key=lambda x: x["index"])
     clips = sorted(output["clips"], key=lambda x: x["index"])
     clip_objs = [Clip(**c) for c in clips]
