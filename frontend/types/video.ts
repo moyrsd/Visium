@@ -8,6 +8,7 @@ export interface ClipData {
   prompt: string | null;
   duration: number | null;
   visuals: string | null;
+  status: "PENDING" | "READY" | "ERROR";
 }
 
 export interface VideoData {

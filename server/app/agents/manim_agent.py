@@ -4,6 +4,7 @@ import subprocess
 
 from langgraph.graph import END, START, StateGraph
 
+from app.db.database import VideoStatus
 from app.prompts.manim_agent import code_generator_prompt, code_rewrite_prompt, visual_review_prompt
 from app.schemas.manim_agent_schema import CodingAgentState
 from app.services.llm_service import llm
@@ -135,6 +136,7 @@ def manim_checker(state: CodingAgentState):
                     "narration_text": state["narration_text"],
                     "code": state["code"],
                     "prompt": state["direction"],
+                    "status": VideoStatus.READY,
                     "duration": state.get("duration", 0),
                     "visuals": state.get("visuals", ""),
                     "audio_path": aud_path,

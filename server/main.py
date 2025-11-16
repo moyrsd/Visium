@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.db.database import init_db
-from app.routes import get_status, video
+from app.routes import get_status, modify, video
 
 
 # Database initialization on startup
@@ -34,6 +34,7 @@ app.mount("/media", StaticFiles(directory="media"), name="media")
 # All router registrations
 app.include_router(video.router)
 app.include_router(get_status.router)
+app.include_router(modify.router)
 
 
 @app.get("/")

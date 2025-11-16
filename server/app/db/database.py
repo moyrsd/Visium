@@ -48,6 +48,7 @@ class Clip(SQLModel, table=True):
     duration: float | None = None
     visuals: str | None = None
     audio_path: str | None = None
+    status: str | None = None
     video: Video | None = Relationship(back_populates="clips")
 
 
