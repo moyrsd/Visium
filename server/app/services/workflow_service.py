@@ -39,7 +39,8 @@ def run_workflow(topic: str, video_id: str, job_id: str, session: Session) -> st
         "clips": [],
     }
     config = {
-        "recursion_limit": 50
+        "recursion_limit": 50,
+        "max_concurrency": 5,
     }
     output = workflow.invoke(initial_state, config=config)
     ordered = sorted(output["video_paths"], key=lambda x: x["index"])
