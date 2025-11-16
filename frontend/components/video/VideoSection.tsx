@@ -27,7 +27,9 @@ export default function VideoSection({
   const [video, setVideo] = useState<VideoData>(initialVideo);
   const [selectedClip, setSelectedClip] = useState<ClipData | null>(null);
 
-  const [isProcessing, setIsProcessing] = useState<boolean>(!initialVideo.url);
+  const [isProcessing, setIsProcessing] = useState<boolean>(
+    !initialVideo.url || initialVideo.status === "PENDING"
+  );
 
   useEffect(() => {
     if (!isProcessing) return;
@@ -48,12 +50,13 @@ export default function VideoSection({
         const rawVideo = await res.json();
 
         // Check if the backend has populated the final video path
-        if (rawVideo.status === "READY" && rawVideo.final_video_path) {
+        if (rawVideo.status === "READY") {
           console.log("Video is ready!");
           clearInterval(interval);
           setVideo(formatVideoData(rawVideo));
           setIsProcessing(false);
-        } else {
+        } else if (rawVideo.status === "PENDING") {
+          setIsProcessing(true);
           console.log("Video still processing...");
         }
       } catch (error) {
