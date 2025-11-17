@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.agents.manim_agent import coding_agent_compiled
 from app.db.database import Clip, VideoStatus, get_session
 from app.services.audio_service import generate_single_voiceover
+from app.services.logging_service import logger
 
 router = APIRouter()
 @router.post("/modify_clip/{clip_id}")
@@ -34,6 +35,7 @@ async def modify_clip(clip_id: str, prompt: str = Form(None), code : str = Form(
                 "duration": duration or clip.duration,
                 "visuals": visuals or clip.visuals,
             }
+            logger.info(f"Modifying clip {clip.id} with state: {intial_state}")
             result = coding_agent_compiled.invoke(intial_state)
             clip.direction = result["clips"][0]["prompt"]
             clip.code = result["clips"][0]["code"]

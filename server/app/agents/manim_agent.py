@@ -13,6 +13,7 @@ from app.services.video_service import mix_audio
 
 
 def code_generator(state: CodingAgentState):
+    logger.info(state)
     logger.info(f"[code_generator] called for slide_index={state.get('slide_index')} clip_video_id={state.get('clip_video_id')}")
     logger.debug(f"[code_generator] incoming state rewrite={state.get('rewrite')} feedback={state.get('feedback')}")
     if state["rewrite"] == "required":
